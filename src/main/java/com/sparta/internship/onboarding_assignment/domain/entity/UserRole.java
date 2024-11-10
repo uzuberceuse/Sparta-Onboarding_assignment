@@ -1,4 +1,4 @@
-package com.sparta.internship.onboarding_assignment.entity;
+package com.sparta.internship.onboarding_assignment.domain.entity;
 
 public enum UserRole {
 
