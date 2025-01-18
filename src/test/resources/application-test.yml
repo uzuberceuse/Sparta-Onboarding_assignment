@@ -1,0 +1,14 @@
+jwt:
+  secret:
+    key: 's0m3r4nd0m3x4mpl3key2G3n3r4t3d== '
+
+spring:
+  datasource:
+    url: jdbc:h2:mem:testdb  # H2 메모리 데이터베이스를 사용 (테스트용)
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: password
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true

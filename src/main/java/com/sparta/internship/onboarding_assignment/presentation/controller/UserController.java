@@ -6,8 +6,13 @@ import com.sparta.internship.onboarding_assignment.presentation.dto.SignInReques
 import com.sparta.internship.onboarding_assignment.presentation.dto.SignInResponseDto;
 import com.sparta.internship.onboarding_assignment.presentation.dto.SignUpRequestDto;
 import com.sparta.internship.onboarding_assignment.presentation.dto.SignUpResponseDto;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,6 +22,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/user")
 @RequiredArgsConstructor
+@Tag(name = "User 서비스", description = "User API 입니다.")
+@Slf4j
 public class UserController {
 
     private final UserService userService;
@@ -26,6 +33,12 @@ public class UserController {
      * @param request
      * @return
      */
+    @Operation(summary = "회원 가입", description = "회원 가입 API 입니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "회원가입 성공"),
+            @ApiResponse(responseCode = "400", description = "회원가입 실패"),
+            @ApiResponse(responseCode = "500", description = "회원가입 오류")
+    })
     @PostMapping("/signUp")
     public ResponseEntity<SignUpResponseDto> signUp(
             @RequestBody @Valid SignUpRequestDto request) {
@@ -39,6 +52,12 @@ public class UserController {
      * @param request
      * @return
      */
+    @Operation(summary = "로그인", description = "로그인 API 입니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "로그인 성공"),
+            @ApiResponse(responseCode = "400", description = "로그인 실패"),
+            @ApiResponse(responseCode = "500", description = "로그인 오류")
+    })
     @PostMapping("/signIn")
     public ResponseEntity<SignInResponseDto> signIn(@Valid @RequestBody SignInRequestDto request) {
         // 토큰 생성

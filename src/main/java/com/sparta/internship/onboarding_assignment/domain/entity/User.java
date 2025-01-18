@@ -3,12 +3,15 @@ package com.sparta.internship.onboarding_assignment.domain.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Getter
 @Builder(access = AccessLevel.PRIVATE)
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "users")
+@Table(name = "user")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,16 +26,15 @@ public class User {
     @Column(nullable = false, unique = true)
     private String nickname;
 
-    @Column(nullable = false)
-    @Enumerated(value = EnumType.STRING) // Enum의 이름 그대로 데이터베이스에 저장
-    private UserRole role;
+    @Builder.Default
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Authority> roles = new ArrayList<>();
 
     public static User create(String username, String encodedPassword, String nickname) {
         return User.builder()
                 .username(username)
                 .password(encodedPassword)
                 .nickname(nickname)
-                .role(UserRole.USER)
                 .build();
     }
 }

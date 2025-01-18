@@ -53,8 +53,7 @@ public class UserService {
                 .orElseThrow(() -> new NotFoundException("유저가 존재하지 않습니다."));
 
         if(user!=null){
-            String token = jwtUtil.createToken(user.getUsername(), user.getRole());
-            return token;
+            return jwtUtil.createToken(user.getUsername(), user.getRole());
         } else {
             throw new GlobalException(HttpStatus.BAD_REQUEST, "유저가 존재하지 않습니다.");
         }
@@ -70,8 +69,7 @@ public class UserService {
      * @return
      */
     public boolean existsByUsername(String username) {
-        boolean result = userRepository.existsByUsername(username);
-        return result;
+        return userRepository.existsByUsername(username);
     }
 
     /**
@@ -80,7 +78,6 @@ public class UserService {
      * @return
      */
     public boolean existsByNickname(String nickname) {
-        boolean result = userRepository.existsByNickname(nickname);
-        return result;
+        return userRepository.existsByNickname(nickname);
     }
 }

@@ -2,7 +2,7 @@
 package com.sparta.internship.onboarding_assignment.config.auth;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sparta.internship.onboarding_assignment.domain.entity.UserRole;
+import com.sparta.internship.onboarding_assignment.domain.entity.UserRoleEnum;
 import com.sparta.internship.onboarding_assignment.presentation.dto.SignInRequestDto;
 import com.sparta.internship.onboarding_assignment.presentation.dto.SignInResponseDto;
 import com.sparta.internship.onboarding_assignment.presentation.dto.UserDetailsImpl;
@@ -47,7 +47,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException {
         String username = ((UserDetailsImpl) authResult.getPrincipal()).getUsername();
-        UserRole role = ((UserDetailsImpl) authResult.getPrincipal()).getUser().getRole();
+        UserRoleEnum role = ((UserDetailsImpl) authResult.getPrincipal()).getUser().getRole();
 
         // JWT 생성
         String token = jwtUtil.createToken(username, role);

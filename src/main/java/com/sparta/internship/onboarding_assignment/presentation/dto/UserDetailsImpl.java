@@ -1,7 +1,7 @@
 package com.sparta.internship.onboarding_assignment.presentation.dto;
 
 import com.sparta.internship.onboarding_assignment.domain.entity.User;
-import com.sparta.internship.onboarding_assignment.domain.entity.UserRole;
+import com.sparta.internship.onboarding_assignment.domain.entity.UserRoleEnum;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -33,7 +33,7 @@ public class UserDetailsImpl implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        UserRole role = user.getRole();
+        UserRoleEnum role = user.getRole();
         String authority = role.getAuthority();
 
         SimpleGrantedAuthority simpleGrantedAuthority = new SimpleGrantedAuthority(authority);

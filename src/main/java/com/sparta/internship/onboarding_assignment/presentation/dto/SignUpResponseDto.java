@@ -1,7 +1,6 @@
 package com.sparta.internship.onboarding_assignment.presentation.dto;
 
 import com.sparta.internship.onboarding_assignment.domain.entity.User;
-import com.sparta.internship.onboarding_assignment.domain.entity.UserRole;
 import lombok.*;
 
 import java.util.List;
