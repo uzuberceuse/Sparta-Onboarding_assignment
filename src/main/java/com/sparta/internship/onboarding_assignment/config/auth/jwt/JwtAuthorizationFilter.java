@@ -1,5 +1,6 @@
-package com.sparta.internship.onboarding_assignment.config.auth;
+package com.sparta.internship.onboarding_assignment.config.auth.jwt;
 
+import com.sparta.internship.onboarding_assignment.config.auth.UserDetailsServiceImpl;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -11,7 +12,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -21,9 +21,9 @@ import java.io.IOException;
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
     private final JwtUtil jwtUtil;
-    private final UserDetailsService userService;
+    private final UserDetailsServiceImpl userService;
 
-    public JwtAuthorizationFilter(JwtUtil jwtUtil, UserDetailsService userService) {
+    public JwtAuthorizationFilter(JwtUtil jwtUtil, UserDetailsServiceImpl userService) {
         this.jwtUtil = jwtUtil;
         this.userService = userService;
     }

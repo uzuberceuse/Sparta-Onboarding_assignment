@@ -22,4 +22,11 @@ public class Authority {
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id")
     private User user;
+
+    public static Authority create(User user, UserRoleEnum role) {
+        return Authority.builder()
+                .user(user)
+                .role(role)
+                .build();
+    }
 }

@@ -1,6 +1,5 @@
-package com.sparta.internship.onboarding_assignment.config.auth;
+package com.sparta.internship.onboarding_assignment.config.auth.jwt;
 
-import com.sparta.internship.onboarding_assignment.domain.entity.UserRoleEnum;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
@@ -24,15 +23,16 @@ public class JwtUtil {
      */
     // Header KEY 값
     public static final String AUTHORIZATION_HEADER = "Authorization";
-
-    // 사용자 권한 값의 KEY
-    public static final String AUTHORIZATION_KEY = "auth";
-
+    // 사용자 권한 값
+    public static final String AUTHORIZATION = "auth";
     // Token 식별자
     public static final String BEARER_PREFIX = "Bearer ";
 
     // 토큰 만료시간
-    private final long TOKEN_TIME = 60 * 60 * 1000L; // 60분
+    @Value("${jwt.token.access-expiration}")
+    private long accessTokenExpiration;
+    @Value("${jwt.token.refresh-expiration}")
+    private long refreshTokenExpiration;
 
     @Value("${jwt.secret.key}")
     private String secretKey;
@@ -52,17 +52,26 @@ public class JwtUtil {
      *  JWT 생성
      */
     // 토큰 생성
-    public String createToken(String username, UserRoleEnum role) {
+
+    public String createToken(String username, String role, long expirationTime) {
         Date date = new Date();
 
         return BEARER_PREFIX +
                 Jwts.builder()
                         .setSubject(username) // 사용자 식별자값(ID)
-                        .claim(AUTHORIZATION_KEY, role) // 사용자 권한
-                        .setExpiration(new Date(date.getTime() + TOKEN_TIME)) // 만료 시간
+                        .claim(AUTHORIZATION, role) // 사용자 권한
+                        .setExpiration(new Date(date.getTime() + expirationTime)) // 만료 시간
                         .setIssuedAt(date) // 발급일
                         .signWith(key, signatureAlgorithm) // 암호화 알고리즘
                         .compact();
+    }
+
+    public String createAccessToken(String username, String role) {
+        return createToken(username, role, accessTokenExpiration);
+    }
+
+    public String createRefreshToken(String username, String role) {
+        return createToken(username, role, refreshTokenExpiration);
     }
 
     // JWT 토큰 substring

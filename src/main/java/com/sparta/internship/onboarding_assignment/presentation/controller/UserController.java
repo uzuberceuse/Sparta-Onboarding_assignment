@@ -1,7 +1,7 @@
 package com.sparta.internship.onboarding_assignment.presentation.controller;
 
 import com.sparta.internship.onboarding_assignment.application.service.UserService;
-import com.sparta.internship.onboarding_assignment.config.auth.JwtUtil;
+import com.sparta.internship.onboarding_assignment.config.auth.jwt.JwtUtil;
 import com.sparta.internship.onboarding_assignment.presentation.dto.SignInRequestDto;
 import com.sparta.internship.onboarding_assignment.presentation.dto.SignInResponseDto;
 import com.sparta.internship.onboarding_assignment.presentation.dto.SignUpRequestDto;
@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -59,14 +60,9 @@ public class UserController {
             @ApiResponse(responseCode = "500", description = "로그인 오류")
     })
     @PostMapping("/signIn")
-    public ResponseEntity<SignInResponseDto> signIn(@Valid @RequestBody SignInRequestDto request) {
-        // 토큰 생성
-        final String token = userService.signIn(request);
-        final SignInResponseDto response = SignInResponseDto.of(token);
+    public ResponseEntity<SignInResponseDto> signIn(@Valid @RequestBody SignInRequestDto request,  HttpServletResponse response) {
 
-        // 헤더와 JSON 본문에 동시에 token 포함
-        return ResponseEntity.ok()
-                .header(JwtUtil.AUTHORIZATION_HEADER, JwtUtil.BEARER_PREFIX + token) // 헤더에 토큰 추가
-                .body(response); // JSON 응답 본문에 토큰 포함
+        final SignInResponseDto result = userService.signIn(request, response);
+        return ResponseEntity.ok(result);
     }
 }

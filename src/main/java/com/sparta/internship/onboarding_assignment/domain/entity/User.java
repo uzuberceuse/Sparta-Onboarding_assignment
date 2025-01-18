@@ -27,8 +27,8 @@ public class User {
     private String nickname;
 
     @Builder.Default
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<Authority> roles = new ArrayList<>();
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Authority> authorities = new ArrayList<>();
 
     public static User create(String username, String encodedPassword, String nickname) {
         return User.builder()
@@ -36,5 +36,10 @@ public class User {
                 .password(encodedPassword)
                 .nickname(nickname)
                 .build();
+    }
+
+    public void addAuthority(UserRoleEnum role) {
+        Authority authority = Authority.create(this, role);
+        this.authorities.add(authority);
     }
 }
