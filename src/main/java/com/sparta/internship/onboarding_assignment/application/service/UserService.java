@@ -13,15 +13,19 @@ import com.sparta.internship.onboarding_assignment.presentation.dto.SignUpRespon
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.concurrent.TimeUnit;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class UserService {
 
@@ -61,8 +65,12 @@ public class UserService {
     public SignInResponseDto signIn(SignInRequestDto request, HttpServletResponse response) {
 
         // 유저 확인
-        User user = userRepository.findByUsernameAndPassword(request.getUsername(), request.getPassword())
-                .orElseThrow(() -> new NotFoundException("해당 아이디와 비밀번호가 일치하는 유저가 존재하지 않습니다."));
+        User user = userRepository.findByUsername(request.getUsername())
+                .orElseThrow(() -> new NotFoundException("해당 아이디를 가진 유저가 존재하지 않습니다."));
+
+        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+            throw new NotFoundException("비밀번호가 일치하지 않습니다.");
+        }
 
         // 유저의 권한 정보 추출
         String role = user.getAuthorities().stream()
@@ -70,13 +78,8 @@ public class UserService {
                 .findFirst() // 첫 번째 권한 가져오기 (단일 권한 가정)
                 .orElseThrow(() -> new IllegalStateException("유저의 권한이 설정되지 않았습니다."));
 
-        String accessToken = jwtUtil.createAccessToken(user.getUsername(),role);
-        String refreshToken = jwtUtil.createRefreshToken(user.getUsername(),role);
-
-        addAccessTokenToHeader(response, accessToken);
-        addRefreshTokenToCookie(response, refreshToken);
-
-        return SignInResponseDto.of(accessToken);
+        // 토큰 반환
+        return SignInResponseDto.of(issueToken(response, user.getUsername(), role));
     }
 
     private String getEncodedPassword(String password) {
@@ -84,22 +87,49 @@ public class UserService {
     }
 
     /**
+     * 토큰 발급
+     */
+    public String issueToken( HttpServletResponse response, String username, String role) {
+
+        String accessToken = jwtUtil.createAccessToken(username,role);
+        String refreshToken = jwtUtil.createRefreshToken(username,role);
+
+        addAccessTokenToHeader(response, accessToken);
+        addRefreshTokenToCookie(response, refreshToken);
+
+        accessToken = accessToken.substring(7);
+
+        return accessToken;
+    }
+
+    /**
      * Access Token을 헤더에 추가
      */
     public void addAccessTokenToHeader(HttpServletResponse response, String accessToken) {
-        response.addHeader(JwtUtil.AUTHORIZATION_HEADER, JwtUtil.BEARER_PREFIX + accessToken);
+        response.addHeader(JwtUtil.AUTHORIZATION_HEADER, accessToken);
     }
 
     /**
      * Refresh Token을 HttpOnly 쿠키에 추가
      */
     public void addRefreshTokenToCookie(HttpServletResponse response, String refreshToken) {
-        Cookie refreshCookie = new Cookie("refreshToken", refreshToken);
-        refreshCookie.setHttpOnly(true); // HttpOnly 설정
-        refreshCookie.setSecure(true); // HTTPS 연결에서만 전송
-        refreshCookie.setPath("/"); // 전체 애플리케이션 경로에서 사용
-        refreshCookie.setMaxAge((int) TimeUnit.MILLISECONDS.toSeconds(refreshExpiration)); // 만료 시간 설정
-        response.addCookie(refreshCookie);
+        try {
+            // "Bearer " 접두사 제거 및 URL 인코딩
+            String encodedRefreshToken = URLEncoder.encode(refreshToken.replace("Bearer ", ""), StandardCharsets.UTF_8.toString());
+
+            Cookie refreshCookie = new Cookie("refreshToken", encodedRefreshToken);
+            refreshCookie.setHttpOnly(true); // HttpOnly 설정
+            refreshCookie.setSecure(true); // HTTPS 연결에서만 전송
+            refreshCookie.setPath("/"); // 전체 애플리케이션 경로에서 사용
+            refreshCookie.setMaxAge((int) TimeUnit.MILLISECONDS.toSeconds(refreshExpiration)); // 만료 시간 설정
+            response.addCookie(refreshCookie);
+
+            log.debug("RefreshToken 쿠키 저장 완료: {}", refreshCookie.getValue());
+        } catch (Exception e) {
+
+            log.error("Failed to create and store refresh token", e);
+            throw new RuntimeException("Error creating refresh token", e);
+        }
     }
 
     /**

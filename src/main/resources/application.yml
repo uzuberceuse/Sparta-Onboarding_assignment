@@ -38,3 +38,7 @@ springdoc:
       paths-to-match: /api/order/** # 매핑 될 API 목록
     - group: user
       paths-to-match: /api/user/**
+
+logging:
+  level:
+    com.sparta.internship.onboarding_assignment: DEBUG
