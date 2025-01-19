@@ -1,7 +1,6 @@
 package com.sparta.internship.onboarding_assignment.application.service;
 
 import com.sparta.internship.onboarding_assignment.application.exceptions.GlobalException;
-import com.sparta.internship.onboarding_assignment.application.exceptions.NotFoundException;
 import com.sparta.internship.onboarding_assignment.config.auth.jwt.JwtUtil;
 import com.sparta.internship.onboarding_assignment.domain.entity.User;
 import com.sparta.internship.onboarding_assignment.domain.entity.UserRoleEnum;
@@ -66,17 +65,17 @@ public class UserService {
 
         // 유저 확인
         User user = userRepository.findByUsername(request.getUsername())
-                .orElseThrow(() -> new NotFoundException("해당 아이디를 가진 유저가 존재하지 않습니다."));
+                .orElseThrow(() -> new GlobalException(HttpStatus.NOT_FOUND, "해당 아이디를 가진 유저가 존재하지 않습니다."));
 
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            throw new NotFoundException("비밀번호가 일치하지 않습니다.");
+            throw new GlobalException(HttpStatus.BAD_REQUEST, "비밀번호가 일치하지 않습니다.");
         }
 
         // 유저의 권한 정보 추출
         String role = user.getAuthorities().stream()
                 .map(authority -> authority.getRole().getAuthority()) // 권한 문자열 추출
                 .findFirst() // 첫 번째 권한 가져오기 (단일 권한 가정)
-                .orElseThrow(() -> new IllegalStateException("유저의 권한이 설정되지 않았습니다."));
+                .orElseThrow(() -> new GlobalException(HttpStatus.INTERNAL_SERVER_ERROR, "유저의 권한이 설정되지 않았습니다."));
 
         // 토큰 반환
         return SignInResponseDto.of(issueToken(response, user.getUsername(), role));
@@ -117,7 +116,7 @@ public class UserService {
             // "Bearer " 접두사 제거 및 URL 인코딩
             String encodedRefreshToken = URLEncoder.encode(jwtUtil.substringToken(refreshToken), StandardCharsets.UTF_8.toString());
 
-            Cookie refreshCookie = new Cookie("refreshToken", encodedRefreshToken);
+            Cookie refreshCookie = new Cookie("RefreshToken", encodedRefreshToken);
             refreshCookie.setHttpOnly(true); // HttpOnly 설정
             refreshCookie.setSecure(true); // HTTPS 연결에서만 전송
             refreshCookie.setPath("/"); // 전체 애플리케이션 경로에서 사용

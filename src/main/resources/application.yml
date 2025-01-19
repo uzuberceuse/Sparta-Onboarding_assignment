@@ -39,4 +39,4 @@ springdoc:
 
 logging:
   level:
-    com.sparta.internship.onboarding_assignment: DEBUG
+    com.sparta.internship.onboarding_assignment: WARN
