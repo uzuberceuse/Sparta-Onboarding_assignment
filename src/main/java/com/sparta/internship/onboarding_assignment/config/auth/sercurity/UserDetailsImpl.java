@@ -1,8 +1,7 @@
-package com.sparta.internship.onboarding_assignment.config.auth;
+package com.sparta.internship.onboarding_assignment.config.auth.sercurity;
 
 import com.sparta.internship.onboarding_assignment.domain.entity.Authority;
 import com.sparta.internship.onboarding_assignment.domain.entity.User;
-import com.sparta.internship.onboarding_assignment.domain.entity.UserRoleEnum;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

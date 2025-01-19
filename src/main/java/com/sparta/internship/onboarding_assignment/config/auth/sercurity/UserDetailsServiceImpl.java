@@ -1,4 +1,4 @@
-package com.sparta.internship.onboarding_assignment.config.auth;
+package com.sparta.internship.onboarding_assignment.config.auth.sercurity;
 
 import com.sparta.internship.onboarding_assignment.domain.entity.User;
 import com.sparta.internship.onboarding_assignment.domain.repository.UserRepository;

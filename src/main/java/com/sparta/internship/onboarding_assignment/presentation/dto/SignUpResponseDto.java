@@ -25,7 +25,7 @@ public class SignUpResponseDto {
 
         public static AuthorityResponse of(Authority authority) {
             return AuthorityResponse.builder()
-                    .authorityName(authority.getRole().name()) // 권한 이름을 반환
+                    .authorityName(authority.getRole().getAuthority()) // 권한 이름을 반환
                     .build();
         }
     }

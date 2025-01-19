@@ -1,4 +1,4 @@
-package com.sparta.internship.onboarding_assignment.config.auth;
+package com.sparta.internship.onboarding_assignment.config.auth.sercurity;
 
 import com.sparta.internship.onboarding_assignment.config.auth.jwt.JwtAuthorizationFilter;
 import com.sparta.internship.onboarding_assignment.config.auth.jwt.JwtUtil;

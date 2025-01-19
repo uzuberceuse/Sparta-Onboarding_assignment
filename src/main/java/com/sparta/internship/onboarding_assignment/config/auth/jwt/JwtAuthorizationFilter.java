@@ -1,6 +1,6 @@
 package com.sparta.internship.onboarding_assignment.config.auth.jwt;
 
-import com.sparta.internship.onboarding_assignment.config.auth.UserDetailsServiceImpl;
+import com.sparta.internship.onboarding_assignment.config.auth.sercurity.UserDetailsServiceImpl;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
