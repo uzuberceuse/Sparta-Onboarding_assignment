@@ -34,8 +34,6 @@ springdoc:
     display-request-duration: true
     operations-sorter: alpha
   group-configs: #문서를 페이지로 구분하는 설정
-    - group: order # 페이지 이름
-      paths-to-match: /api/order/** # 매핑 될 API 목록
     - group: user
       paths-to-match: /api/user/**
 

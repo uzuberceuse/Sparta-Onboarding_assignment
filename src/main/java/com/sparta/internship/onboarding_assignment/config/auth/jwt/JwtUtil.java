@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
+import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Base64;
 import java.util.Date;
@@ -41,6 +42,20 @@ public class JwtUtil {
     private final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
 
     public static final Logger logger = (Logger) LoggerFactory.getLogger("JWT 관련 로그");
+
+    // 기본 생성자
+    public JwtUtil() {
+    }
+
+    /**
+     *  테스트 코드를 위해 생성자 추가
+     */
+    public JwtUtil(String secretKey, long accessTokenExpiration, long refreshTokenExpiration) {
+        this.secretKey = secretKey;
+        this.accessTokenExpiration = accessTokenExpiration;
+        this.refreshTokenExpiration = refreshTokenExpiration;
+        this.key = Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
+    }
 
     @PostConstruct
     public void init() {

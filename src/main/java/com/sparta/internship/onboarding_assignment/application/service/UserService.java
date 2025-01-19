@@ -97,7 +97,7 @@ public class UserService {
         addAccessTokenToHeader(response, accessToken);
         addRefreshTokenToCookie(response, refreshToken);
 
-        accessToken = accessToken.substring(7);
+        accessToken = jwtUtil.substringToken(accessToken);
 
         return accessToken;
     }
@@ -115,7 +115,7 @@ public class UserService {
     public void addRefreshTokenToCookie(HttpServletResponse response, String refreshToken) {
         try {
             // "Bearer " 접두사 제거 및 URL 인코딩
-            String encodedRefreshToken = URLEncoder.encode(refreshToken.replace("Bearer ", ""), StandardCharsets.UTF_8.toString());
+            String encodedRefreshToken = URLEncoder.encode(jwtUtil.substringToken(refreshToken), StandardCharsets.UTF_8.toString());
 
             Cookie refreshCookie = new Cookie("refreshToken", encodedRefreshToken);
             refreshCookie.setHttpOnly(true); // HttpOnly 설정
