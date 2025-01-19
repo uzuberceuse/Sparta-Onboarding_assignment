@@ -2,9 +2,9 @@ spring:
   application:
     name: onboarding_assignment
   datasource:
-    url: jdbc:mysql://localhost:3306/auth
-    username: root
-    password: sparta@240729
+    url: jdbc:mysql://onboarding-assignment.cb68eamgydj0.ap-northeast-2.rds.amazonaws.com:3306/auth
+    username: admin
+    password: sparta1234
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
